@@ -1,0 +1,245 @@
+<?php /* Template Name: HomePage */
+get_header();
+
+// Layout
+$sidebar = get_post_meta( get_the_ID(), 'minti_layout', true );
+
+if($sidebar == 'default'){
+  $sidebarlayout = 'sixteen columns';
+}
+elseif($sidebar == 'fullwidth'){
+  $sidebarlayout = 'page-section nopadding';
+}
+elseif($sidebar == 'sidebar-left'){
+  $sidebarlayout = 'sidebar-left twelve alt columns';
+}
+elseif($sidebar == 'sidebar-right'){
+  $sidebarlayout = 'sidebar-right twelve alt columns';
+}
+else{
+  $sidebarlayout = 'sixteen columns';
+} ?>
+
+<div id="page-wrap" <?php if($sidebar != 'fullwidth'){ echo 'class="container"'; } ?> >
+
+  <div id="content" class="<?php echo esc_attr($sidebarlayout); ?>">
+  <?php if (have_posts()) : while (have_posts()) : the_post(); ?>
+
+    <?php the_content(); ?>
+
+
+<div  class="wpb_row vc_row-fluid standard-section section  section-no-parallax  stretch   " data-speed="1" style="padding-bottom: 100px; ">
+  <div class="col span_12 color-dark left">
+
+    <script>
+        jQuery(document).ready(function() {
+            jQuery("#portfolio-list").filterable();
+        });
+    </script>
+
+    <?php
+      $args = array(
+          'parent' => 9
+      );
+      $terms = get_terms( 'product_cat', $args );
+
+      if ( $terms ) {
+          echo '<ul id="portfolio-filter"><li><a href="#all" title="">Toutes les expéditions</a></li>';
+              foreach ( $terms as $term ) {
+                  echo '<li>';
+                          echo '<a rel="'.$term->slug.'" href="#'.$term->slug.'">';
+                              echo $term->name;
+                          echo '</a>';
+                  echo '</li>';
+          }
+          echo '</ul>';
+      }
+    ?>
+
+    <div style="clear:both"></div>
+
+    <?php
+
+            $args2 = array(
+          'post_type' => 'product',
+          'tax_query' => array(
+              array(
+                  'taxonomy' => 'product_cat',
+                  'field' => 'ID', //can be set to ID
+                  'terms' => 9 //if field is ID you can reference by cat/term number
+              )
+          )
+      );
+      $loop = new WP_Query( $args2 );
+
+
+        $count =0;
+    ?>
+
+
+    <div class="vc_col-sm-12 wpb_column column_container col no-padding color-dark" style="" data-animation="" data-delay="">
+      <div class="wpb_wrapper">
+        <div class="woocommerce columns-3">
+            <ul class="products" id="portfolio-list">
+
+            <?php if ( $loop ) :
+
+                while ( $loop->have_posts() ) : $loop->the_post(); ?>
+
+                    <?php
+                    $terms = get_the_terms( $post->ID, 'product_cat' );
+
+                    if ( $terms && ! is_wp_error( $terms ) ) :
+                        $links = array();
+
+                        foreach ( $terms as $term )
+                        {
+                            $links[] = $term->name;
+                        }
+                        $links = str_replace(' ', '-', $links);
+                        $tax = join( " ", $links );
+                    else :
+                        $tax = '';
+                    endif;
+                    ?>
+
+                    <?php $infos = get_post_custom_values('_url'); ?>
+
+                    <li class="portfolio-item <?php echo strtolower($tax); ?> all ">
+                        <a href="<?php the_permalink() ?>"><?php the_post_thumbnail(); ?></a>
+                        <h3><?php the_title(); ?></h3>
+                    </li>
+
+                <?php endwhile; else: ?>
+
+                    <li class="error-not-found">Sorry, no portfolio entries found.</li>
+
+            <?php endif; ?>
+
+        </ul>
+    </div></div></div></div></div>
+
+
+
+
+
+
+
+
+    <div  class="wpb_row vc_row-fluid full-width-section section  section-no-parallax  stretch   " data-speed="1" style="">
+
+      <div class="col span_12 color-dark left">
+        <div class="vc_col-sm-12 wpb_column column_container col no-padding color-dark" style="" data-animation="" data-delay="">
+          <div class="wpb_wrapper">
+            <div class="callout clearfix" style="background-color:#f2df00; color:#ffffff;">
+              <div class="callout-text">Découvrez toutes les possibilités avec nos forfaits</div>
+                <div class="callout-button"><a class="button medium color-3" href="https://www.edgeexperience.ca/expeditions/" target="_self">Voir les expéditions</a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div  class="wpb_row vc_row-fluid standard-section section  section-no-parallax  stretch   " data-speed="1" style="padding-top: 100px; padding-bottom: 100px; ">
+        <div class="col span_12 color-dark left">
+          <div class="vc_col-sm-3 wpb_column column_container col no-padding color-dark" style="" data-animation="" data-delay="">
+            <div class="wpb_wrapper">
+
+            </div>
+          </div>
+
+          <div class="vc_col-sm-6 newsletter wpb_column column_container col no-padding color-dark" style="" data-animation="" data-delay="">
+            <div class="wpb_wrapper">
+
+              <div class="wpb_text_column wpb_content_element ">
+                <div class="wpb_wrapper">
+                  <h6>Infolettre</h6>
+                  <div class='gf_browser_chrome gform_wrapper' id='gform_wrapper_1' >
+                            <form method='post' enctype='multipart/form-data'  id='gform_1'  action='/'>
+                                  <div class='gform_body'><ul id='gform_fields_1' class='gform_fields top_label form_sublabel_below description_below'><li id='field_1_3' class='gfield gfield_html gfield_html_formatted gfield_no_follows_desc field_sublabel_below field_description_below gfield_visibility_visible' >Rester branché. Choisir. Partir. Découvrir. Recommencer. </li><li id='field_1_1' class='gfield field_sublabel_below field_description_below gfield_visibility_visible' ><label class='gfield_label' for='input_1_1' >Votre nom</label><div class='ginput_container ginput_container_text'><input name='input_1' id='input_1_1' type='text' value='' class='large'  tabindex='1'  placeholder='Votre nom'  aria-invalid="false" /></div></li><li id='field_1_2' class='gfield gfield_contains_required field_sublabel_below field_description_below gfield_visibility_visible' ><label class='gfield_label' for='input_1_2' >Courriel<span class='gfield_required'>*</span></label><div class='ginput_container ginput_container_email'>
+                                      <input name='input_2' id='input_1_2' type='text' value='' class='large' tabindex='2'   placeholder='Courriel'/>
+                                  </div></li><!--<li id='field_1_4' class='gfield gform_validation_container field_sublabel_below field_description_below gfield_visibility_' ><label class='gfield_label' for='input_1_4' >Phone</label><div class='ginput_container'><input name='input_4' id='input_1_4' type='text' value='' /></div><div class='gfield_description'>Ce champ n’est utilisé qu’à des fins de validation et devrait rester inchangé.</div></li>-->
+                                      </ul></div>
+                            <div class='gform_footer top_label'> <input type='submit' id='gform_submit_button_1' class='gform_button button' value='Inscription' tabindex='3' onclick='if(window["gf_submitting_1"]){return false;}  window["gf_submitting_1"]=true;  ' onkeypress='if( event.keyCode == 13 ){ if(window["gf_submitting_1"]){return false;} window["gf_submitting_1"]=true;  jQuery("#gform_1").trigger("submit",[true]); }' />
+                                <input type='hidden' class='gform_hidden' name='is_submit_1' value='1' />
+                                <input type='hidden' class='gform_hidden' name='gform_submit' value='1' />
+
+                                <input type='hidden' class='gform_hidden' name='gform_unique_id' value='' />
+                                <input type='hidden' class='gform_hidden' name='state_1' value='WyJbXSIsIjI3MDE5YjlkODlhNmJjZjVmMDE5ZGJmYjc3OGVhMzNlIl0=' />
+                                <input type='hidden' class='gform_hidden' name='gform_target_page_number_1' id='gform_target_page_number_1' value='0' />
+                                <input type='hidden' class='gform_hidden' name='gform_source_page_number_1' id='gform_source_page_number_1' value='1' />
+                                <input type='hidden' name='gform_field_values' value='' />
+
+                            </div>
+                                </form>
+                             </div>
+                             <script type='text/javascript'> jQuery(document).bind('gform_post_render', function(event, formId, currentPage){if(formId == 1) {if(typeof Placeholders != 'undefined'){
+                    Placeholders.enable();
+                }} } );jQuery(document).bind('gform_post_conditional_logic', function(event, formId, fields, isInit){} );</script><script type='text/javascript'> jQuery(document).ready(function(){jQuery(document).trigger('gform_post_render', [1, 1]) } ); </script>
+                </div>
+              </div>
+
+          </div>
+        </div>
+
+        <div class="vc_col-sm-3 wpb_column column_container col no-padding color-dark" style="" data-animation="" data-delay="">
+          <div class="wpb_wrapper">
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div  class="wpb_row vc_row-fluid standard-section section  section-no-parallax team stretch   " data-speed="1" style="background-color: #000000; padding-top: 100px; padding-bottom: 100px; ">
+      <div class="col span_12 color-light left">
+        <div class="vc_col-sm-6 wpb_column column_container col no-padding color-dark" style="" data-animation="" data-delay="">
+          <div class="wpb_wrapper">
+            <h2 class="headline font-special fontsize-l fontweight-700 lh-inherit align-left transform-uppercase " style="margin: 0 0 20px 0;">À propos</h2>
+            <div class="wpb_text_column wpb_content_element ">
+              <div class="wpb_wrapper">
+                <p>L&rsquo;expérience <em>EDGE</em> se veut des plus complètes en vous proposant aussi des échanges culturels riches avec les habitants du pays. Notre équipe passionnée sera vous conseiller tout au long de votre périple.</p>
+              </div>
+            </div>
+            <a href="https://www.edgeexperience.ca/a-propos#team" target="_self" class="button color-1 medium " style="border-radius: 2px;">Notre équipe</a>
+          </div>
+        </div>
+
+        <div class="vc_col-sm-6 wpb_column column_container col no-padding color-dark" style="" data-animation="" data-delay="">
+          <div class="wpb_wrapper">
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <?php wp_link_pages(array('before' => 'Pages: ', 'next_or_number' => 'number')); ?>
+
+    <?php if($minti_data['switch_comments'] == 1) { ?>
+      <?php comments_template(); ?>
+    <?php } ?>
+
+    <?php endwhile; endif; ?>
+  </div> <!-- end content -->
+
+  <?php if($sidebar == 'sidebar-left' || $sidebar == 'sidebar-right'){ ?>
+  <div id="sidebar" class="<?php echo esc_attr($sidebar); ?> alt">
+    <?php get_sidebar(); ?>
+  </div>
+  <?php } ?>
+
+</div> <!-- end page-wrap -->
+
+<?php get_footer(); ?>
